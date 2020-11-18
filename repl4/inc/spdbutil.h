@@ -8,8 +8,10 @@
 #include <stdint.h>
 #include <unistd.h>
 
-#define COLUMN_COMPANY_NAME 32
-#define COLUMN_MODEL_NAME 128
+#define COLUMN_COMPANY_NAME 32  // byte size to store company name
+#define COLUMN_MODEL_NAME 128 // byte size to store model name
+
+// get the size of attribute for provided struct
 #define size_of_attribute(Struct, Attribute) sizeof(((Struct*)0)->Attribute)
 
 #define TABLE_MAX_PAGES 100  // arbitrary
@@ -96,8 +98,7 @@ void read_input(InputBuffer* input_buffer);
 MetaCommandResult do_meta_command(InputBuffer* input_buffer);
 
 /**
- * @brief: Prepare Statement, put data from created input buffer to created Statement,
- *         insert statement type and then data from input buffer to statement->row
+ * @brief: Prepare Statement
  * @param: created input buffer to take input,
  * @param: created statement to store data and query type from input buffer to itself
  *         and other data inside row in statement
@@ -155,8 +156,6 @@ void* row_slot(Table* table, uint32_t row_num);
 
 /**
   * @brief: execution of insert statement(query),
-  *         check if table is full, if not, serialize row from statement set from InputBuffer
-  *         to table with provided page with correct byte offset and return status according to it
   * @param: created table in which to store data provided by user from insert query
   * @param: statement created from the query from input buffer provided by user
   * @return: execution status for whether the table is full not
@@ -165,8 +164,6 @@ ExecuteResult execute_insert(Table* table, Statement* statement);
 
 /**
   * @brief: execution of select statement(query),
-  *         deserialize_row from table, to new row instance(of Row struct) and
-  *         iterate through number of rows created in table to show full data
   * @param: created table in which to store data provided by user from insert query
   * @return: execution status for whether the table is full not
   */
@@ -183,8 +180,6 @@ ExecuteResult execute_statement(Table *table, Statement* statement);
 
 /**
   * @brief: create a new table,
-  *         new table creation of sizeof of Table struct(having number of rows and pages)
-  *         initialize row number and initialization of all the pages a table can have
   * @return: newly created table
   */
 Table* new_table();
@@ -198,7 +193,6 @@ void free_table(Table* table);
 
 /**
   * @brief: print the data formatted accordingly to show the data stored in table in a row
-  *         used by select statement(execute_select) to show data
   * @param: row from which to print data
   */
 void print_row(Row* row);
