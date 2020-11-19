@@ -25,6 +25,9 @@ def check_output(number=10):
     # at the time of writing this script(repl4), page_size is set to 100 at a
     # page can contain upto 23 rows as every row size was 172 bytes and a page
     # size was 4096 bytes
+
+    # updated the program to handle long strings(have to change expected output
+    # in this script)
     queries = list()
     for i in range(1, number + 1):
         query = f"insert {i} {1900 + i} {'c'*32}{i} {'m'*128}{i} {i*100}"
