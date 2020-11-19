@@ -28,6 +28,9 @@ int main(int argc, char **argv) {
 			 * every member of enum, so handling every member */
 			case (PREPARE_SUCCESS):
 				break;
+			case (PREPARE_STRING_TOO_LONG):
+				printf("Entered string is too long.\n");
+				break;
 			case (PREPARE_SYNTAX_ERROR):
 				printf("Syntax Error. Couldn't parse the statement.\n");
 				break;
