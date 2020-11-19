@@ -56,9 +56,9 @@ typedef enum {
 typedef struct {
 	uint32_t sl_no;
 	uint32_t year;
-	char company[COLUMN_COMPANY_NAME];
-	char model[COLUMN_MODEL_NAME];
-	float power;
+	char company[COLUMN_COMPANY_NAME + 1];  // also includes NULL char
+	char model[COLUMN_MODEL_NAME + 1];  // also includes NULL char
+	double power;
 } Row;
 
 /**
