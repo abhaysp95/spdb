@@ -40,8 +40,6 @@ const uint32_t TABLE_MAX_ROWS = TABLE_MAX_PAGES * ROWS_PER_PAGE;
 
 /**
  * @brief: create new input buffer to perform I/O operation
- * @param: none
- * @return: created new input buffer
  */
 InputBuffer* new_input_buffer() {
 	InputBuffer* input_buffer = (InputBuffer*)malloc(sizeof(InputBuffer));
@@ -53,16 +51,14 @@ InputBuffer* new_input_buffer() {
 
 /**
   * @brief: print prompt, "spdb >"
-  * @return: nothing
-  * @print: prompt
   */
 void print_prompt() {
 	printf("spdb > ");
 }
 
 /**
- * @brief: read input to created input buffer
- * @param: created input buffer
+ * @brief: read input to created input buffer,
+ *         read input from stdin for given length into the instance of InputBuffer
  */
 void read_input(InputBuffer* input_buffer) {
 	/* general syntax of getline():
@@ -93,8 +89,6 @@ void read_input(InputBuffer* input_buffer) {
 
 /**
  * @brief: handle Meta Commands (the one starting with dots(.))
- * @param: created input buffer
- * @return: return META_COMMAND_UNRECOGNIZED if can't recognize meta command
  */
 MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
 	if (strcmp(input_buffer->buffer, ".exit") == 0) {
@@ -108,10 +102,6 @@ MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
 /**
  * @brief: Prepare Statement, put data from created input buffer to created Statement,
  *         insert statement type and then data from input buffer to statement->row
- * @param: created input buffer to take input,
- * @param: created statement to store data and query type from input buffer to itself
- *         and other data inside row in statement
- * @return: status code for statement preparation
  */
 PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement) {
 	/* using strncmp, cause there will be queries after insert, select etc. queries */
@@ -138,8 +128,6 @@ PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
 
 /**
  * @brief: serializing row with data provided by source to destination with fixed offset
- * @param: data stored in Row as source
- * @param: destination in which we have to serialize data to store in table
  */
 void serialize_row(Row* source, void* destination) {
 	memcpy(destination + SLNO_OFFSET, &(source->sl_no), SLNO_SIZE);
@@ -151,8 +139,6 @@ void serialize_row(Row* source, void* destination) {
 
 /**
   * @brief: deserialize row
-  * @param: source provided from which we have to deserialize stored data to show
-  * @param: destination in which to store deserialized data
   */
 void deserialize_row(void* source, Row* destination) {
 	memcpy(&(destination->sl_no), source + SLNO_OFFSET, SLNO_SIZE);
@@ -164,9 +150,6 @@ void deserialize_row(void* source, Row* destination) {
 
 /**
   * @brief: create page, if not exists and/or provide the offset slot of row in which to store data
-  * @param: created table in which to find page to put row or to create new page
-  * @param: row number w.r.t. table to find page number and if that page exists with page number
-  * @return: location in page in table to store row in the page
   */
 void* row_slot(Table* table, uint32_t row_num) {
 	uint32_t page_num = row_num / ROWS_PER_PAGE;
@@ -183,9 +166,6 @@ void* row_slot(Table* table, uint32_t row_num) {
   * @brief: execution of insert statement(query),
   *         check if table is full, if not, serialize row from statement set from InputBuffer
   *         to table with provided page with correct byte offset and return status according to it
-  * @param: created table in which to store data provided by user from insert query
-  * @param: statement created from the query from input buffer provided by user
-  * @return: execution status for whether the table is full not
   */
 ExecuteResult execute_insert(Table* table, Statement* statement) {
 	if (table->num_rows >= TABLE_MAX_ROWS) {
@@ -205,8 +185,6 @@ ExecuteResult execute_insert(Table* table, Statement* statement) {
   * @brief: execution of select statement(query),
   *         deserialize_row from table, to new row instance(of Row struct) and
   *         iterate through number of rows created in table to show full data
-  * @param: created table in which to store data provided by user from insert query
-  * @return: execution status for whether the table is full not
   */
 ExecuteResult execute_select(Table* table) {
 	Row row;
@@ -220,9 +198,6 @@ ExecuteResult execute_select(Table* table) {
 /**
   * @brief: see type of query from provied statement and execute it and provide table
   *         on/from to perform action
-  * @param: created table to/from which to perform action
-  * @param: created statement from which to store data in table
-  * @return: execute status, return from the respective functions of performed operations
   */
 ExecuteResult execute_statement(Table* table, Statement* statement) {
 	switch (statement->type) {
@@ -252,7 +227,6 @@ Table* new_table() {
 /**
   * @brief: free the memory of table
   *         iterate through all the pages of table and free them
-  * @param: table created
   */
 void free_table(Table *table) {
 	/* loop till there's are pages are in table */
@@ -265,7 +239,6 @@ void free_table(Table *table) {
 /**
   * @brief: print the data formatted accordingly to show the data stored in table in a row
   *         used by select statement(execute_select()) to show data
-  * @param: row from which to print data
   */
 void print_row(Row* row) {
 	printf("(%d, %d, %s, %s, %f)\n", row->sl_no, row->year, row->company, row->model, row->power);
@@ -274,7 +247,6 @@ void print_row(Row* row) {
 /**
   * @brief: free the created input buffer used to take input from user by read_input(),
   *         frees all the buffer which takes input in input buffer created
-  * @param: created input buffer to take input
   */
 void close_input_buffer(InputBuffer* input_buffer) {
 	free(input_buffer->buffer);
