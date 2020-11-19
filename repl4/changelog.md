@@ -1,4 +1,4 @@
 Adding functionality to input data with certain limitations:
-1. only support to single, hard-coded table
-2. reside only in memory(no persistance to disk)
-3. support only two operations: insert and select
+1. fixed length(bytes) for company name and model name
+2. Tested of how much rows of data can be inserted in a table.
+3. checks for string length in entered query and gives output accordingly
