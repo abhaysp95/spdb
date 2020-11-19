@@ -99,6 +99,38 @@ MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
 	}
 }
 
+PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
+	statement->type = STATEMENT_INSERT;
+
+	char* query_type = strtok(input_buffer->buffer, " ");
+	char* sl_no = strtok(NULL, " ");
+	char* mfd_year = strtok(NULL, " ");
+	char* comp_name = strtok(NULL, " ");
+	char* model_name = strtok(NULL, " ");
+	char* power = strtok(NULL, " ");
+
+	if ((sl_no == NULL)
+			|| (mfd_year == NULL)
+			|| (comp_name == NULL)
+			|| (model_name == NULL)
+			|| (power == NULL)) {
+		return PREPARE_SYNTAX_ERROR;
+	}
+
+	if ((strlen(comp_name) > COMPANY_SIZE)
+			|| (strlen(model_name) > MODEL_SIZE)) {
+		return PREPARE_STRING_TOO_LONG;
+	}
+
+	statement->row_to_insert.sl_no = atoi(sl_no);
+	statement->row_to_insert.year = atoi(mfd_year);
+	strcpy(statement->row_to_insert.company, comp_name);
+	strcpy(statement->row_to_insert.model, model_name);
+	statement->row_to_insert.power = atof(power);  // atof takes char* and returns double
+	free(query_type);
+	return PREPARE_SUCCESS;
+}
+
 /**
  * @brief: Prepare Statement, put data from created input buffer to created Statement,
  *         insert statement type and then data from input buffer to statement->row
@@ -106,18 +138,7 @@ MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
 PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement) {
 	/* using strncmp, cause there will be queries after insert, select etc. queries */
 	if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
-		statement->type = STATEMENT_INSERT;
-		/* insert data to different blocks of Row */
-		int args_assigned = sscanf(input_buffer->buffer, "insert %d %d %s %s %f",
-				&(statement->row_to_insert.sl_no),
-				&(statement->row_to_insert.year),
-				statement->row_to_insert.company,
-				statement->row_to_insert.model,
-				&(statement->row_to_insert.power));
-		if (args_assigned < 5) {
-			return PREPARE_SYNTAX_ERROR;
-		}
-		return PREPARE_SUCCESS;
+		return prepare_insert(input_buffer, statement);
 	}
 	if (strncmp(input_buffer->buffer, "select", 6) == 0) {
 		statement->type = STATEMENT_SELECT;
