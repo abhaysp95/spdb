@@ -32,6 +32,8 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
 ${BIN}: ${OBJ}
 	-@echo "Linking -> $@"
 	$(LD) $(LFLAG) -o $@ ${OBJ_DIR}/*.o
+	-@echo "copied ${BIN} -> $(notdir $(realpath .))"
+	cp -f ${BIN} .
 
 debug: ${DEBUG_BIN}
 
@@ -44,6 +46,6 @@ ${DEBUG_BIN}: ${DEBUG}
 	$(LD) $(LFLAG) -o $@ ${DEBUG_DIR}/*.o
 
 clean:
-	rm -rf ${DIR}
+	rm -rf ${DIR} $(notdir $(realpath .))
 
 .PHONY: all dir debug clean
