@@ -92,13 +92,6 @@ void print_prompt();
 void read_input(InputBuffer* input_buffer);
 
 /**
- * @brief: handle Meta Commands (the one starting with dots(.))
- * @param: created input buffer
- * @return: return META_COMMAND_UNRECOGNIZED if can't recognize meta command
- */
-MetaCommandResult do_meta_command(InputBuffer* input_buffer);
-
-/**
  * @brief: Prepare Statement
  * @param: created input buffer to take input,
  * @param: created statement to store data and query type from input buffer to itself
@@ -184,6 +177,13 @@ ExecuteResult execute_statement(Table *table, Statement* statement);
   * @return: newly created table
   */
 Table* new_table();
+
+/**
+ * @brief: handle Meta Commands (the one starting with dots(.))
+ * @param: created input buffer
+ * @return: return META_COMMAND_UNRECOGNIZED if can't recognize meta command
+ */
+MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table);
 
 /**
   * @brief: free the memory of table
