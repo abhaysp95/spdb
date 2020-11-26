@@ -6,7 +6,7 @@
   * @param: created input buffer
   * @return: status as 0 or 1, whether entered query is meta command or not
   */
-int handle_meta_commands(InputBuffer* input_buffer);
+int handle_meta_commands(InputBuffer* input_buffer, Table* table);
 
 int main(int argc, char **argv) {
 	/* create new input buffer */
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 		print_prompt();  // prompt: spdb >
 		read_input(input_buffer);  // take input with InputBuffer
 
-		if (handle_meta_commands(input_buffer)) {
+		if (handle_meta_commands(input_buffer, table)) {
 			continue;
 		}
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 /**
   * @brief: handle the execution of meta commands(queries starting with '.'(dot))
   */
-int handle_meta_commands(InputBuffer* input_buffer) {
+int handle_meta_commands(InputBuffer* input_buffer, Table* table) {
 	/* Non-SQL statements like ".exit" are called meta command, so
 	 * handling them with seperate function
 
@@ -63,7 +63,7 @@ int handle_meta_commands(InputBuffer* input_buffer) {
 	 are bad(and C doesn't support them)
 	 */
 	if (input_buffer->buffer[0] == '.') {
-		switch(do_meta_command(input_buffer)) {
+		switch(do_meta_command(input_buffer, table)) {
 			case (META_COMMAND_SUCCESS):
 				return 1;
 			case (META_COMMAND_UNRECOGNIZED):
