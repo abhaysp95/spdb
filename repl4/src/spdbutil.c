@@ -90,8 +90,10 @@ void read_input(InputBuffer* input_buffer) {
 /**
  * @brief: handle Meta Commands (the one starting with dots(.))
  */
-MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
+MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table) {
 	if (strcmp(input_buffer->buffer, ".exit") == 0) {
+		close_input_buffer(input_buffer);
+		free_table(table);
 		exit(EXIT_SUCCESS);
 	}
 	else {
@@ -127,7 +129,7 @@ PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
 	strcpy(statement->row_to_insert.company, comp_name);
 	strcpy(statement->row_to_insert.model, model_name);
 	statement->row_to_insert.power = atof(power);  // atof takes char* and returns double
-	free(query_type);
+	/*free(query_type);*/
 	return PREPARE_SUCCESS;
 }
 
@@ -270,6 +272,9 @@ void print_row(Row* row) {
   *         frees all the buffer which takes input in input buffer created
   */
 void close_input_buffer(InputBuffer* input_buffer) {
-	free(input_buffer->buffer);
+	if (input_buffer->buffer != NULL) {
+		free(input_buffer->buffer);
+	}
+	// I think the problem with above line is that input_buffer->buffer is not dynamically allocated,
 	free(input_buffer);
 }
