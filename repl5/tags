@@ -38,9 +38,11 @@ OBJ	Makefile	/^OBJ = $(addprefix ${OBJ_DIR}\/, $(notdir ${SRC:.c=.o}))$/;"	m
 OBJ_DIR	Makefile	/^OBJ_DIR = obj$/;"	m
 PAGE_SIZE	src/spdbutil.c	/^const uint32_t PAGE_SIZE = 4096;$/;"	v	typeref:typename:const uint32_t
 POWER_OFFSET	src/spdbutil.c	/^const uint32_t POWER_OFFSET = MODEL_OFFSET + MODEL_SIZE;$/;"	v	typeref:typename:const uint32_t
+PREPARE_STRING_TOO_LONG	inc/spdbutil.h	/^	PREPARE_STRING_TOO_LONG,$/;"	e	enum:__anon80c3334b0303
 PREPARE_SUCCESS	inc/spdbutil.h	/^	PREPARE_SUCCESS,$/;"	e	enum:__anon80c3334b0303
 PREPARE_SYNTAX_ERROR	inc/spdbutil.h	/^	PREPARE_SYNTAX_ERROR,$/;"	e	enum:__anon80c3334b0303
 PREPARE_UNRECOGNIZED_STATEMENT	inc/spdbutil.h	/^	PREPARE_UNRECOGNIZED_STATEMENT$/;"	e	enum:__anon80c3334b0303
+Pager	inc/spdbutil.h	/^} Pager;$/;"	t	typeref:struct:__anon80c3334b0808
 PrepareResult	inc/spdbutil.h	/^} PrepareResult;$/;"	t	typeref:enum:__anon80c3334b0303
 ROWS_PER_PAGE	src/spdbutil.c	/^const uint32_t ROWS_PER_PAGE = PAGE_SIZE \/ ROW_SIZE;$/;"	v	typeref:typename:const uint32_t
 ROW_SIZE	src/spdbutil.c	/^const uint32_t ROW_SIZE = SLNO_SIZE + YEAR_SIZE + COMPANY_SIZE + MODEL_SIZE + POWER_SIZE;$/;"	v	typeref:typename:const uint32_t
@@ -55,7 +57,7 @@ Statement	inc/spdbutil.h	/^} Statement;$/;"	t	typeref:struct:__anon80c3334b0708
 StatementType	inc/spdbutil.h	/^} StatementType;$/;"	t	typeref:enum:__anon80c3334b0503
 TABLE_MAX_PAGES	inc/spdbutil.h	/^#define TABLE_MAX_PAGES /;"	d
 TABLE_MAX_ROWS	src/spdbutil.c	/^const uint32_t TABLE_MAX_ROWS = TABLE_MAX_PAGES * ROWS_PER_PAGE;$/;"	v	typeref:typename:const uint32_t
-Table	inc/spdbutil.h	/^} Table;$/;"	t	typeref:struct:__anon80c3334b0808
+Table	inc/spdbutil.h	/^} Table;$/;"	t	typeref:struct:__anon80c3334b0908
 YEAR_OFFSET	src/spdbutil.c	/^const uint32_t YEAR_OFFSET = SLNO_SIZE + SLNO_OFFSET;$/;"	v	typeref:typename:const uint32_t
 __anon80c3334b0108	inc/spdbutil.h	/^typedef struct {$/;"	s
 __anon80c3334b0203	inc/spdbutil.h	/^typedef enum {$/;"	g
@@ -65,44 +67,45 @@ __anon80c3334b0503	inc/spdbutil.h	/^typedef enum {$/;"	g
 __anon80c3334b0608	inc/spdbutil.h	/^typedef struct {$/;"	s
 __anon80c3334b0708	inc/spdbutil.h	/^typedef struct {$/;"	s
 __anon80c3334b0808	inc/spdbutil.h	/^typedef struct {$/;"	s
+__anon80c3334b0908	inc/spdbutil.h	/^typedef struct {$/;"	s
 all	Makefile	/^all: dir ${BIN}$/;"	t
 buffer	inc/spdbutil.h	/^	char* buffer;$/;"	m	struct:__anon80c3334b0108	typeref:typename:char *
 buffer_length	inc/spdbutil.h	/^	size_t buffer_length;$/;"	m	struct:__anon80c3334b0108	typeref:typename:size_t
-checkOutput	test.py	/^def checkOutput():$/;"	f
-check_output	test2.py	/^def check_output():$/;"	f
 clean	Makefile	/^clean:$/;"	t
 close_input_buffer	src/spdbutil.c	/^void close_input_buffer(InputBuffer* input_buffer) {$/;"	f	typeref:typename:void
-company	inc/spdbutil.h	/^	char company[COLUMN_COMPANY_NAME];$/;"	m	struct:__anon80c3334b0608	typeref:typename:char[]
-count	test.py	/^    count = 0$/;"	v
+company	inc/spdbutil.h	/^	char company[COLUMN_COMPANY_NAME + 1];  \/\/ also includes NULL char$/;"	m	struct:__anon80c3334b0608	typeref:typename:char[]
+db_close	src/spdbutil.c	/^void db_close(Table* table) {$/;"	f	typeref:typename:void
+db_open	src/spdbutil.c	/^Table* db_open(const char* filename) {$/;"	f	typeref:typename:Table *
 debug	Makefile	/^debug: ${DEBUG_BIN}$/;"	t
 deserialize_row	src/spdbutil.c	/^void deserialize_row(void* source, Row* destination) {$/;"	f	typeref:typename:void
 dir	Makefile	/^dir:$/;"	t
-do_meta_command	src/spdbutil.c	/^MetaCommandResult do_meta_command(InputBuffer* input_buffer) {$/;"	f	typeref:typename:MetaCommandResult
+do_meta_command	src/spdbutil.c	/^MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table) {$/;"	f	typeref:typename:MetaCommandResult
 execute_insert	src/spdbutil.c	/^ExecuteResult execute_insert(Table* table, Statement* statement) {$/;"	f	typeref:typename:ExecuteResult
-execute_select	src/spdbutil.c	/^ExecuteResult execute_select(Table* table, Statement* statement) {$/;"	f	typeref:typename:ExecuteResult
+execute_select	src/spdbutil.c	/^ExecuteResult execute_select(Table* table) {$/;"	f	typeref:typename:ExecuteResult
 execute_statement	src/spdbutil.c	/^ExecuteResult execute_statement(Table* table, Statement* statement) {$/;"	f	typeref:typename:ExecuteResult
-free_table	src/spdbutil.c	/^void free_table(Table *table) {$/;"	f	typeref:typename:void
+file_descriptor	inc/spdbutil.h	/^	int file_descriptor;$/;"	m	struct:__anon80c3334b0808	typeref:typename:int
+file_length	inc/spdbutil.h	/^	uint32_t file_length;$/;"	m	struct:__anon80c3334b0808	typeref:typename:uint32_t
+get_page	src/spdbutil.c	/^void* get_page(Pager* pager, uint32_t page_num) {$/;"	f	typeref:typename:void *
+handle_meta_commands	src/main.c	/^int handle_meta_commands(InputBuffer* input_buffer, Table* table) {$/;"	f	typeref:typename:int
 input_length	inc/spdbutil.h	/^	ssize_t input_length;$/;"	m	struct:__anon80c3334b0108	typeref:typename:ssize_t
 main	src/main.c	/^int main(int argc, char **argv) {$/;"	f	typeref:typename:int
-model	inc/spdbutil.h	/^	char model[COLUMN_MODEL_NAME];$/;"	m	struct:__anon80c3334b0608	typeref:typename:char[]
+model	inc/spdbutil.h	/^	char model[COLUMN_MODEL_NAME + 1];  \/\/ also includes NULL char$/;"	m	struct:__anon80c3334b0608	typeref:typename:char[]
 new_input_buffer	src/spdbutil.c	/^InputBuffer* new_input_buffer() {$/;"	f	typeref:typename:InputBuffer *
-new_table	src/spdbutil.c	/^Table* new_table() {$/;"	f	typeref:typename:Table *
-num_rows	inc/spdbutil.h	/^	uint32_t num_rows;$/;"	m	struct:__anon80c3334b0808	typeref:typename:uint32_t
-number	test.py	/^    number = 2$/;"	v
+num_rows	inc/spdbutil.h	/^	uint32_t num_rows;$/;"	m	struct:__anon80c3334b0908	typeref:typename:uint32_t
+pager	inc/spdbutil.h	/^	Pager* pager;  \/\/ making request for page from Pager$/;"	m	struct:__anon80c3334b0908	typeref:typename:Pager *
+pager_flush	src/spdbutil.c	/^void pager_flush(Pager* pager, uint32_t page_num, uint32_t size) {$/;"	f	typeref:typename:void
+pager_open	src/spdbutil.c	/^Pager* pager_open(const char* filename) {$/;"	f	typeref:typename:Pager *
 pages	inc/spdbutil.h	/^	void* pages[TABLE_MAX_PAGES];$/;"	m	struct:__anon80c3334b0808	typeref:typename:void * []
-power	inc/spdbutil.h	/^	float power;$/;"	m	struct:__anon80c3334b0608	typeref:typename:float
+power	inc/spdbutil.h	/^	double power;$/;"	m	struct:__anon80c3334b0608	typeref:typename:double
+prepare_insert	src/spdbutil.c	/^PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {$/;"	f	typeref:typename:PrepareResult
 prepare_statement	src/spdbutil.c	/^PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement) {$/;"	f	typeref:typename:PrepareResult
 print_prompt	src/spdbutil.c	/^void print_prompt() {$/;"	f	typeref:typename:void
 print_row	src/spdbutil.c	/^void print_row(Row* row) {$/;"	f	typeref:typename:void
 read_input	src/spdbutil.c	/^void read_input(InputBuffer* input_buffer) {$/;"	f	typeref:typename:void
 row_slot	src/spdbutil.c	/^void* row_slot(Table* table, uint32_t row_num) {$/;"	f	typeref:typename:void *
 row_to_insert	inc/spdbutil.h	/^	Row row_to_insert;$/;"	m	struct:__anon80c3334b0708	typeref:typename:Row
-runQueries	test.py	/^def runQueries(commands):$/;"	f
-run_queries	test2.py	/^def run_queries(command):$/;"	f
 serialize_row	src/spdbutil.c	/^void serialize_row(Row* source, void* destination) {$/;"	f	typeref:typename:void
 size_of_attribute	inc/spdbutil.h	/^#define size_of_attribute(/;"	d
 sl_no	inc/spdbutil.h	/^	uint32_t sl_no;$/;"	m	struct:__anon80c3334b0608	typeref:typename:uint32_t
-start_time	test.py	/^    start_time = time.time()$/;"	v
-time_taken	test.py	/^    time_taken = time.time() - start_time$/;"	v
 type	inc/spdbutil.h	/^	StatementType type;$/;"	m	struct:__anon80c3334b0708	typeref:typename:StatementType
 year	inc/spdbutil.h	/^	uint32_t year;$/;"	m	struct:__anon80c3334b0608	typeref:typename:uint32_t
