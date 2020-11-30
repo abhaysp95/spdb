@@ -129,7 +129,7 @@ PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
 	strcpy(statement->row_to_insert.company, comp_name);
 	strcpy(statement->row_to_insert.model, model_name);
 	statement->row_to_insert.power = atof(power);  // atof takes char* and returns double
-	free(query_type);
+	/*free(query_type);*/
 	return PREPARE_SUCCESS;
 }
 
@@ -176,10 +176,7 @@ void deserialize_row(void* source, Row* destination) {
   */
 void* row_slot(Table* table, uint32_t row_num) {
 	uint32_t page_num = row_num / ROWS_PER_PAGE;
-	void *page = table->pages[page_num];
-	if (page == NULL) {
-		page = table->pages[page_num] = malloc(PAGE_SIZE);  // 4KB size page
-	}
+	void* page = get_page(table->pager, page_num);
 	uint32_t row_offset = row_num % ROWS_PER_PAGE;
 	uint32_t byte_offset = row_offset * ROW_SIZE;
 	return page + byte_offset;
