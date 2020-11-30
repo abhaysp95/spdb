@@ -400,6 +400,9 @@ void print_row(Row* row) {
   *         frees all the buffer which takes input in input buffer created
   */
 void close_input_buffer(InputBuffer* input_buffer) {
-	free(input_buffer->buffer);
+	if (input_buffer->buffer != NULL) {
+		free(input_buffer->buffer);
+	}
+	// I think the problem with above line is that input_buffer->buffer is not dynamically allocated,
 	free(input_buffer);
 }
