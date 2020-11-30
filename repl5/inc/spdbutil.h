@@ -95,13 +95,6 @@ void print_prompt();
 void read_input(InputBuffer* input_buffer);
 
 /**
- * @brief: handle Meta Commands (the one starting with dots(.))
- * @param: created input buffer
- * @return: return META_COMMAND_UNRECOGNIZED if can't recognize meta command
- */
-MetaCommandResult do_meta_command(InputBuffer* input_buffer);
-
-/**
  * @brief: Prepare Statement
  * @param: created input buffer to take input,
  * @param: created statement to store data and query type from input buffer to itself
@@ -144,10 +137,17 @@ extern const uint32_t PAGE_SIZE;
 extern const uint32_t ROWS_PER_PAGE;
 extern const uint32_t TABLE_MAX_ROWS;
 
+/* Pager structure, to access the page cache and the file, Table's object will make requests for pages through the pager */
+typedef struct {
+	int file_descriptor;
+	uint32_t file_length;
+	void* pages[TABLE_MAX_PAGES];
+} Pager;
+
 /* Table structure that points to pages and keeps track of how many rows are there */
 typedef struct {
 	uint32_t num_rows;
-	void* pages[TABLE_MAX_PAGES];
+	Pager* pager;  // making request for page from Pager
 } Table;
 
 /**
@@ -183,17 +183,46 @@ ExecuteResult execute_select(Table* table);
 ExecuteResult execute_statement(Table *table, Statement* statement);
 
 /**
-  * @brief: create a new table,
-  * @return: newly created table
+  * @brief: creates new table checking with already stored database file
+  * @return: newly created database
   */
-Table* new_table();
+Table* db_open();
 
 /**
-  * @brief: free the memory of table
-  *         iterate through all the pages of table and free them
-  * @param: table created
+  * @brief: opens the database file and keeps track of its size
+  * @param: filename to open/create
+  * @return: created Pager object
   */
-void free_table(Table* table);
+Pager* pager_open(const char* filename);
+
+/**
+  * @brief: fetch the required page(reads from file)
+  * @param: instance of Pager
+  * @param: page_num to which get the page of
+  * @return: page as of Pager->pages[page_num]
+  */
+void* get_page(Pager* pager, uint32_t page_num);
+
+/**
+  * @brief: calls function to flush the page cache to disk
+  * @param: created Table instance
+  */
+void db_close(Table* table);
+
+/**
+  * @brief: writes to file(disk) from Pager data structure
+  * @param: Pager instance where the data is loaded and currently stored
+  * @param: page_num from which to write to file
+  * @param: size of a full or partial page
+  */
+void pager_flush(Pager* pager, uint32_t page_num, uint32_t size);
+
+/**
+ * @brief: handle Meta Commands (the one starting with dots(.))
+ * @param: created input buffer
+ * @return: return META_COMMAND_UNRECOGNIZED if can't recognize meta command
+ */
+MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table);
 
 /**
   * @brief: print the data formatted accordingly to show the data stored in table in a row
