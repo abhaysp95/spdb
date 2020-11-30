@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #define COLUMN_COMPANY_NAME 32  // byte size to store company name
 #define COLUMN_MODEL_NAME 128 // byte size to store model name
